@@ -26,6 +26,7 @@ namespace THSDotNetTraining.AdoDotNetSample.ConsoleApp
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
 
+                connection.Close();
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
@@ -35,7 +36,7 @@ namespace THSDotNetTraining.AdoDotNetSample.ConsoleApp
                     Console.WriteLine($"{i + 1} {no} - {name}");
                 }
 
-                connection.Close();
+                
             }
         }
 
