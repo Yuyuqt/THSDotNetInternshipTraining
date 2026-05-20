@@ -1,8 +1,8 @@
 ﻿using System;
-using SLHDotNetTrainingInPersonBatch0.ConsoleApp;
-using WintThinMayPractice.ConsoleApp;
+using THSDotNetTraining.DapperSample.ConsoleApp;
 
-namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
+
+namespace THSDotNetTraining.DapperSample.ConsoleApp
 {
     class Program
     {
