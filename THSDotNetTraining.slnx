@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="THSDotNetTraining.AdoDotNetSample/THSDotNetTraining.AdoDotNetSample.csproj" />
+  <Project Path="THSDotNetTraining.DapperSample/THSDotNetTraining.DapperSample.csproj" />
+</Solution>
