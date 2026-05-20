@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Data.SqlClient;
-using Dapper;  // Dapper namespace
+using Dapper;  
 
-namespace WintThinMayPractice.ConsoleApp
+namespace THSDotNetTraining.DapperSample.ConsoleApp
 {
     public class DapperService
     {

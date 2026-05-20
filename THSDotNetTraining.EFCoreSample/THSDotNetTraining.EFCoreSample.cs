@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using THSDotNetTraining.EFCoreSample.DataAccess;
 
-namespace WintThinMayPractice.ConsoleApp
+namespace THSDotNetTraining.EFCoreSample.ConsoleApp
 {
     public class EfCoreService
     {
