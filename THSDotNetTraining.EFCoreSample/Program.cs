@@ -9,7 +9,7 @@ namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
         {
 
             
-            EfCoreService service = new EfCoreService();
+            EfCoreService efcoreservice = new EfCoreService();
 
             while (true)
             {
@@ -33,7 +33,7 @@ namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
                 {
                     case 1:
                         Console.WriteLine("\nReading data...");
-                        service.Read();
+                        efcoreservice.Read();
                         break;
 
                     case 2:
@@ -65,7 +65,7 @@ namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
                         string mobile = Console.ReadLine();
 
                         // Calls the active service class dynamically
-                        service.Create(sNo, sName, fName, dob, gender, address, mobile);
+                        efcoreservice.Create(sNo, sName, fName, dob, gender, address, mobile);
                         break;
 
                     case 3:
@@ -80,7 +80,7 @@ namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
                             Console.Write("Enter New Address: ");
                             string updateAddress = Console.ReadLine();
 
-                            service.Update(updateId, updateName, updateAddress);
+                            efcoreservice.Update(updateId, updateName, updateAddress);
                         }
                         else
                         {
@@ -94,7 +94,7 @@ namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
 
                         if (int.TryParse(Console.ReadLine(), out int deleteId))
                         {
-                            service.Delete(deleteId);
+                            efcoreservice.Delete(deleteId);
                         }
                         else
                         {
