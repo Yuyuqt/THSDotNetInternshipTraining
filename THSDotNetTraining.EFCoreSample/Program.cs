@@ -1,5 +1,5 @@
 ﻿using System;
-using WintThinMayPractice.ConsoleApp;
+using THSDotNetTraining.EFCoreSample.ConsoleApp;
 
 namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
 {
