@@ -1,8 +1,8 @@
 ﻿using System;
-using SLHDotNetTrainingInPersonBatch0.ConsoleApp;
+
 using THSDotNetTraining.AdoDotNetSample.ConsoleApp;
 
-namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
+namespace THSDotNetTraining.AdoDotNetSample.ConsoleApp
 {
     class Program
     {
