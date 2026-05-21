@@ -22,4 +22,12 @@ public partial class TblStudent
     public string MobileNo { get; set; } = null!;
 
     public bool DeleteFlag { get; set; }
+
+    public DateTime CreatedDateTime { get; set; }
+
+    public string? CreatedBy { get; set; }
+
+    public DateTime? ModifiedDateTime { get; set; }
+
+    public string? ModifiedBy { get; set; }
 }

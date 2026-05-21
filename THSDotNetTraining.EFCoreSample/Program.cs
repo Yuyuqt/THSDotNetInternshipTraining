@@ -1,5 +1,5 @@
 ﻿using System;
-using THSDotNetTraining.EFCoreSample.ConsoleApp;
+using THSDotNetTraining.EFCoreSample.DataAccess;
 
 namespace THSDotNetTraining.EFCoreSample.ConsoleApp
 {
@@ -7,107 +7,161 @@ namespace THSDotNetTraining.EFCoreSample.ConsoleApp
     {
         static void Main(string[] args)
         {
-
-            
             EfCoreService efcoreservice = new EfCoreService();
 
             while (true)
             {
                 Console.WriteLine();
-                Console.WriteLine("=== STUDENT MANAGEMENT SYSTEM ===");
-                Console.WriteLine("1. Read");
-                Console.WriteLine("2. Create");
-                Console.WriteLine("3. Update");
-                Console.WriteLine("4. Delete");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("=== Student Management System (EF Core) ===");
+                Console.WriteLine("1. Read ");
+                Console.WriteLine("2. Create ");
+                Console.WriteLine("3. Edit ");
+                Console.WriteLine("4. Update ");
+                Console.WriteLine("5. Delete ");
+                Console.WriteLine("6. Exit");
                 Console.Write("Choose option: ");
-
 
                 if (!int.TryParse(Console.ReadLine(), out int option))
                 {
-                    Console.WriteLine("Invalid option. Please enter a valid number.");
+                    Console.WriteLine("Please enter a valid numeric option.");
                     continue;
                 }
 
                 switch (option)
                 {
                     case 1:
-                        Console.WriteLine("\nReading data...");
+                        Console.WriteLine("\n--- Reading Student Data ---");
                         efcoreservice.Read();
                         break;
 
                     case 2:
-                        Console.WriteLine("\n--- Adding New Student Details ---");
+                        Console.WriteLine("\n--- Adding New Student ---");
+                        TblStudent newStudent = new TblStudent();
 
-                        Console.Write("Student No: ");
-                        string sNo = Console.ReadLine();
+                        Console.Write("Enter Student No: ");
+                        newStudent.StudentNo = Console.ReadLine()!;
 
-                        Console.Write("Student Name: ");
-                        string sName = Console.ReadLine();
+                        Console.Write("Enter Student Name: ");
+                        newStudent.StudentName = Console.ReadLine()!;
 
-                        Console.Write("Father Name: ");
-                        string fName = Console.ReadLine();
+                        Console.Write("Enter Father Name: ");
+                        newStudent.FatherName = Console.ReadLine()!;
 
-                        Console.Write("Date of Birth (YYYY-MM-DD): ");
-                        if (!DateTime.TryParse(Console.ReadLine(), out DateTime dob))
+                        Console.Write("Enter Date of Birth (yyyy-MM-dd): ");
+                        if (DateTime.TryParse(Console.ReadLine(), out DateTime dob))
                         {
-                            Console.WriteLine("Invalid date format. Falling back to today's date.");
-                            dob = DateTime.Today;
-                        }
-
-                        Console.Write("Gender (M/F): ");
-                        string gender = Console.ReadLine();
-
-                        Console.Write("Address: ");
-                        string address = Console.ReadLine();
-
-                        Console.Write("Mobile No: ");
-                        string mobile = Console.ReadLine();
-
-                        // Calls the active service class dynamically
-                        efcoreservice.Create(sNo, sName, fName, dob, gender, address, mobile);
-                        break;
-
-                    case 3:
-                        Console.WriteLine("\nUpdating Data...");
-                        Console.Write("Enter Student ID to update: ");
-
-                        if (int.TryParse(Console.ReadLine(), out int updateId))
-                        {
-                            Console.Write("Enter New Student Name: ");
-                            string updateName = Console.ReadLine();
-
-                            Console.Write("Enter New Address: ");
-                            string updateAddress = Console.ReadLine();
-
-                            efcoreservice.Update(updateId, updateName, updateAddress);
+                            newStudent.DateOfBirth = dob;
                         }
                         else
                         {
-                            Console.WriteLine("Invalid ID format. Please enter a number.");
+                            newStudent.DateOfBirth = DateTime.Now;
+                            Console.WriteLine("Invalid date format. Saved as today's date.");
+                        }
+
+                        Console.Write("Enter Gender (Male/Female): ");
+                        newStudent.Gender = Console.ReadLine()!;
+
+                        Console.Write("Enter Address: ");
+                        newStudent.Address = Console.ReadLine()!;
+
+                        Console.Write("Enter Mobile No: ");
+                        newStudent.MobileNo = Console.ReadLine()!;
+
+                        efcoreservice.Create(newStudent);
+                        break;
+
+                    case 3:
+                        Console.WriteLine("\n--- Editing Student Data ---");
+                        Console.Write("Enter Student ID to view details: ");
+
+                        if (int.TryParse(Console.ReadLine(), out int editId))
+                        {
+                            TblStudent student = efcoreservice.Edit(editId);
+                            if (student != null)
+                            {
+                                Console.WriteLine($"\n--- Student Details for ID: {student.StudentId} ---");
+                                Console.WriteLine($"No:         {student.StudentNo}");
+                                Console.WriteLine($"Name:       {student.StudentName}");
+                                Console.WriteLine($"Father:     {student.FatherName}");
+                                Console.WriteLine($"DOB:        {student.DateOfBirth:dd MMM yyyy}");
+                                Console.WriteLine($"Gender:     {student.Gender}");
+                                Console.WriteLine($"Address:    {student.Address}");
+                                Console.WriteLine($"Mobile:     {student.MobileNo}");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid Student ID format.");
                         }
                         break;
 
                     case 4:
-                        Console.WriteLine("\nDeleting Data...");
-                        Console.Write("Enter Student ID to delete (Soft Delete): ");
+                        Console.WriteLine("\n--- Updating Student Data ---");
+                        Console.Write("Enter Student ID to update: ");
+                        if (!int.TryParse(Console.ReadLine(), out int updateId))
+                        {
+                            Console.WriteLine("Invalid Student ID format.");
+                            break;
+                        }
 
+                        TblStudent targetStudent = efcoreservice.Edit(updateId);
+                        if (targetStudent == null) break;
+
+                        Console.WriteLine($"Updating details for {targetStudent.StudentName}. Press Enter to keep current values.");
+
+                        Console.Write($"Enter New Student No [{targetStudent.StudentNo}]: ");
+                        string inputNo = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputNo)) targetStudent.StudentNo = inputNo;
+
+                        Console.Write($"Enter New Student Name [{targetStudent.StudentName}]: ");
+                        string inputName = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputName)) targetStudent.StudentName = inputName;
+
+                        Console.Write($"Enter New Father Name [{targetStudent.FatherName}]: ");
+                        string inputFather = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputFather)) targetStudent.FatherName = inputFather;
+
+                        Console.Write($"Enter New DOB (yyyy-MM-dd) [{targetStudent.DateOfBirth:yyyy-MM-dd}]: ");
+                        string inputDob = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputDob) && DateTime.TryParse(inputDob, out DateTime newDob))
+                        {
+                            targetStudent.DateOfBirth = newDob;
+                        }
+
+                        Console.Write($"Enter New Gender [{targetStudent.Gender}]: ");
+                        string inputGender = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputGender)) targetStudent.Gender = inputGender;
+
+                        Console.Write($"Enter New Address [{targetStudent.Address}]: ");
+                        string inputAddress = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputAddress)) targetStudent.Address = inputAddress;
+
+                        Console.Write($"Enter New Mobile No [{targetStudent.MobileNo}]: ");
+                        string inputMobile = Console.ReadLine()!;
+                        if (!string.IsNullOrWhiteSpace(inputMobile)) targetStudent.MobileNo = inputMobile;
+
+                        efcoreservice.Update(targetStudent);
+                        break;
+
+                    case 5:
+                        Console.WriteLine("\n--- Deleting Student Data ---");
+                        Console.Write("Enter Student ID to delete: ");
                         if (int.TryParse(Console.ReadLine(), out int deleteId))
                         {
                             efcoreservice.Delete(deleteId);
                         }
                         else
                         {
-                            Console.WriteLine("Invalid ID format. Please enter a number.");
+                            Console.WriteLine("Invalid Student ID format.");
                         }
                         break;
 
-                    case 5:
+                    case 6:
                         Console.WriteLine("Exiting program. Goodbye!");
                         return;
 
                     default:
-                        Console.WriteLine("Invalid choice. Please pick options between 1 and 5.");
+                        Console.WriteLine("Invalid option. Please choose between 1 and 6.");
                         break;
                 }
             }
