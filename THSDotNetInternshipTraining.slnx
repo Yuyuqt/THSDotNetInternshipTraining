@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="THSDotNetTraining.AdoDotNetSample/THSDotNetInternshipTraining.AdoDotNetSample.csproj" />
-  <Project Path="THSDotNetTraining.DapperSample/THSDotNetInternshipTraining.DapperSample.csproj" />
-  <Project Path="THSDotNetTraining.EFCoreSample/THSDotNetInternshipTraining.EFCoreSample.csproj" Id="765a2ba9-80d3-47a2-b02b-355395928002" />
+  <Project Path="THSDotNetInternshipTraining.AdoDotNetSample/THSDotNetInternshipTraining.AdoDotNetSample.csproj" />
+  <Project Path="THSDotNetInternshipTraining.DapperSample/THSDotNetInternshipTraining.DapperSample.csproj" />
+  <Project Path="THSDotNetInternshipTraining.EFCoreSample/THSDotNetInternshipTraining.EFCoreSample.csproj" />
 </Solution>
