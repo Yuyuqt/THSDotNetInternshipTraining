@@ -1,7 +1,7 @@
 ﻿using System;
 using THSDotNetTraining.EFCoreSample.ConsoleApp;
 
-namespace SLHDotNetTrainingInPersonBatch0.ConsoleApp
+namespace THSDotNetTraining.EFCoreSample.ConsoleApp
 {
     class Program
     {
