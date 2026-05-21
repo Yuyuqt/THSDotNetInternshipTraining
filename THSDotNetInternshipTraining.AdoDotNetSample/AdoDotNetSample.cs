@@ -121,9 +121,27 @@ namespace THSDotNetTraining.AdoDotNetSample.ConsoleApp
             connection.Open();
 
             string query = @"INSERT INTO [dbo].[Tbl_Student] 
-                                    ([StudentNo], [StudentName], [FatherName], [DateOfBirth], [Gender], [Address], [MobileNo], [DeleteFlag], [CreatedDateTime], [CreatedBy])
-                             VALUES 
-                                    (@StudentNo, @StudentName, @FatherName, @DateOfBirth, @Gender, @Address, @MobileNo, 0, @CreatedDateTime, @CreatedBy)";
+                                    ([StudentNo], 
+                                    [StudentName], 
+                                    [FatherName], 
+                                    [DateOfBirth], 
+                                    [Gender], 
+                                    [Address], 
+                                    [MobileNo], 
+                                    [DeleteFlag], 
+                                    [CreatedDateTime], 
+                                    [CreatedBy])
+
+                             VALUES (@StudentNo, 
+                                    @StudentName, 
+                                    @FatherName, 
+                                    @DateOfBirth, 
+                                    @Gender, 
+                                    @Address, 
+                                    @MobileNo, 
+                                    0, 
+                                    @CreatedDateTime, 
+                                    @CreatedBy)";
 
             using SqlCommand cmd = new SqlCommand(query, connection);
             cmd.Parameters.AddWithValue("@StudentNo", student.StudentNo);
