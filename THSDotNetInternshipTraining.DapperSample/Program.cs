@@ -1,14 +1,14 @@
 ﻿using System;
 using THSDotNetTraining.DapperSample;
 using THSDotNetTraining.DapperSample.ConsoleApp;
-
+using Dapper;
 namespace THSDotNetTraining.DapperSample.ConsoleApp
 {
     class Program
     {
         static void Main(string[] args)
         {
-            dapperService dapperService = new dapperService();
+            DapperService dapperService = new DapperService();
 
             while (true)
             {

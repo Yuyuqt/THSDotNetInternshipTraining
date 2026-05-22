@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
+using Dapper; // <-- Don't forget this!
 using THSDotNetTraining.DapperSample;
 
 namespace THSDotNetTraining.DapperSample.ConsoleApp
 {
-    public class dapperService
+    public class DapperService
     {
         private readonly SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder()
         {
@@ -20,7 +21,6 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
         public void Read()
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
 
             string query = @"SELECT [StudentId]
                                   ,[StudentNo]
@@ -35,43 +35,21 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                   ,[CreatedBy]
                                   ,[ModifiedDateTime]
                                   ,[ModifiedBy]
-                              FROM [Practice].[dbo].[Tbl_Student] WHERE [DeleteFlag] = 0";
+                              FROM [dbo].[Tbl_Student] WHERE [DeleteFlag] = 0";
 
-            using SqlCommand cmd = new SqlCommand(query, connection);
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            adapter.Fill(dt);
+            // Dapper automatically opens the connection and maps rows to <Student> objects!
+            IEnumerable<Student> students = connection.Query<Student>(query);
 
-            List<Student> students = new List<Student>();
-            foreach (DataRow row in dt.Rows)
+            foreach (var item in students)
             {
-                Student item = new Student()
-                {
-                    StudentId = Convert.ToInt32(row["StudentId"]),
-                    StudentNo = row["StudentNo"].ToString()!,
-                    StudentName = row["StudentName"].ToString()!,
-                    FatherName = row["FatherName"].ToString()!,
-                    DateOfBirth = Convert.ToDateTime(row["DateOfBirth"]),
-                    Gender = row["Gender"].ToString()!,
-                    Address = row["Address"].ToString()!,
-                    MobileNo = row["MobileNo"].ToString()!,
-                    DeleteFlag = Convert.ToBoolean(row["DeleteFlag"]),
-                    CreatedDateTime = Convert.ToDateTime(row["CreatedDateTime"]),
-                    CreatedBy = row["CreatedBy"].ToString()!,
-                    ModifiedDateTime = row["ModifiedDateTime"] == DBNull.Value ? null : Convert.ToDateTime(row["ModifiedDateTime"]),
-                    ModifiedBy = row["ModifiedBy"] == DBNull.Value ? null : row["ModifiedBy"].ToString()
-                };
-                students.Add(item);
-
                 Console.WriteLine(item.StudentName);
                 Console.WriteLine(item.DateOfBirth.ToString("dd MMM yyyy"));
             }
         }
 
-        public Student Edit(int id)
+        public Student? Edit(int id)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
 
             string query = @"SELECT [StudentId]
                                   ,[StudentNo]
@@ -88,82 +66,47 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                   ,[ModifiedBy] 
                              FROM [dbo].[Tbl_Student] WHERE [StudentId] = @StudentId AND [DeleteFlag] = 0";
 
-            using SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.Parameters.AddWithValue("@StudentId", id);
+            // QueryFirstOrDefault handles matching parameters and returns null if not found
+            var student = connection.QueryFirstOrDefault<Student>(query, new { StudentId = id });
 
-            using SqlDataReader reader = cmd.ExecuteReader();
-            if (reader.Read())
+            if (student == null)
             {
-                return new Student()
-                {
-                    StudentId = Convert.ToInt32(reader["StudentId"]),
-                    StudentNo = reader["StudentNo"].ToString()!,
-                    StudentName = reader["StudentName"].ToString()!,
-                    FatherName = reader["FatherName"].ToString()!,
-                    DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]),
-                    Gender = reader["Gender"].ToString()!,
-                    Address = reader["Address"].ToString()!,
-                    MobileNo = reader["MobileNo"].ToString()!,
-                    DeleteFlag = Convert.ToBoolean(reader["DeleteFlag"]),
-                    CreatedDateTime = Convert.ToDateTime(reader["CreatedDateTime"]),
-                    CreatedBy = reader["CreatedBy"].ToString()!,
-                    ModifiedDateTime = reader["ModifiedDateTime"] == DBNull.Value ? null : Convert.ToDateTime(reader["ModifiedDateTime"]),
-                    ModifiedBy = reader["ModifiedBy"] == DBNull.Value ? null : reader["ModifiedBy"].ToString()
-                };
+                Console.WriteLine("Student not found.");
             }
 
-            Console.WriteLine("Student not found.");
-            return null;
+            return student;
         }
 
         public void Create(Student student)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
 
             string query = @"INSERT INTO [dbo].[Tbl_Student] 
-                                    ([StudentNo], 
-                                    [StudentName], 
-                                    [FatherName], 
-                                    [DateOfBirth], 
-                                    [Gender], 
-                                    [Address], 
-                                    [MobileNo], 
-                                    [DeleteFlag], 
-                                    [CreatedDateTime], 
-                                    [CreatedBy])
+                                    ([StudentNo], [StudentName], [FatherName], [DateOfBirth], [Gender], [Address], [MobileNo], [DeleteFlag], [CreatedDateTime], [CreatedBy])
+                             VALUES (@StudentNo, @StudentName, @FatherName, @DateOfBirth, @Gender, @Address, @MobileNo, 0, @CreatedDateTime, @CreatedBy)";
 
-                             VALUES (@StudentNo, 
-                                    @StudentName, 
-                                    @FatherName, 
-                                    @DateOfBirth, 
-                                    @Gender, 
-                                    @Address, 
-                                    @MobileNo, 
-                                    0, 
-                                    @CreatedDateTime, 
-                                    @CreatedBy)";
+            // Set up audit fields dynamically before sending to Dapper
+            var parameters = new
+            {
+                student.StudentNo,
+                student.StudentName,
+                student.FatherName,
+                student.DateOfBirth,
+                student.Gender,
+                student.Address,
+                student.MobileNo,
+                CreatedDateTime = DateTime.Now,
+                CreatedBy = "admin"
+            };
 
-                                   
-            using SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.Parameters.AddWithValue("@StudentNo", student.StudentNo);
-            cmd.Parameters.AddWithValue("@StudentName", student.StudentName);
-            cmd.Parameters.AddWithValue("@FatherName", student.FatherName);
-            cmd.Parameters.AddWithValue("@DateOfBirth", student.DateOfBirth);
-            cmd.Parameters.AddWithValue("@Gender", student.Gender);
-            cmd.Parameters.AddWithValue("@Address", student.Address);
-            cmd.Parameters.AddWithValue("@MobileNo", student.MobileNo);
-            cmd.Parameters.AddWithValue("@CreatedDateTime", DateTime.Now);
-            cmd.Parameters.AddWithValue("@CreatedBy", "admin");
-
-            int result = cmd.ExecuteNonQuery();
+            // connection.Execute returns the number of affected rows
+            int result = connection.Execute(query, parameters);
             Console.WriteLine(result > 0 ? "Create successful." : "Create failed.");
         }
 
         public void Update(Student student)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
 
             string query = @"UPDATE [dbo].[Tbl_Student]
                              SET [StudentNo] = @StudentNo,
@@ -177,26 +120,27 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                  [ModifiedBy] = @ModifiedBy
                              WHERE [StudentId] = @StudentId AND [DeleteFlag] = 0";
 
-            using SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.Parameters.AddWithValue("@StudentId", student.StudentId);
-            cmd.Parameters.AddWithValue("@StudentNo", student.StudentNo);
-            cmd.Parameters.AddWithValue("@StudentName", student.StudentName);
-            cmd.Parameters.AddWithValue("@FatherName", student.FatherName);
-            cmd.Parameters.AddWithValue("@DateOfBirth", student.DateOfBirth);
-            cmd.Parameters.AddWithValue("@Gender", student.Gender);
-            cmd.Parameters.AddWithValue("@Address", student.Address);
-            cmd.Parameters.AddWithValue("@MobileNo", student.MobileNo);
-            cmd.Parameters.AddWithValue("@ModifiedDateTime", DateTime.Now);
-            cmd.Parameters.AddWithValue("@ModifiedBy", "admin");
+            var parameters = new
+            {
+                student.StudentId,
+                student.StudentNo,
+                student.StudentName,
+                student.FatherName,
+                student.DateOfBirth,
+                student.Gender,
+                student.Address,
+                student.MobileNo,
+                ModifiedDateTime = DateTime.Now,
+                ModifiedBy = "admin"
+            };
 
-            int result = cmd.ExecuteNonQuery();
+            int result = connection.Execute(query, parameters);
             Console.WriteLine(result > 0 ? "Update successful." : "Update failed.");
         }
 
         public void Delete(int id)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
 
             string query = @"UPDATE [dbo].[Tbl_Student] 
                              SET [DeleteFlag] = 1,
@@ -204,12 +148,13 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                  [ModifiedBy] = @ModifiedBy
                              WHERE [StudentId] = @StudentId";
 
-            using SqlCommand cmd = new SqlCommand(query, connection);
-            cmd.Parameters.AddWithValue("@StudentId", id);
-            cmd.Parameters.AddWithValue("@ModifiedDateTime", DateTime.Now);
-            cmd.Parameters.AddWithValue("@ModifiedBy", "admin");
+            int result = connection.Execute(query, new
+            {
+                StudentId = id,
+                ModifiedDateTime = DateTime.Now,
+                ModifiedBy = "admin"
+            });
 
-            int result = cmd.ExecuteNonQuery();
             Console.WriteLine(result > 0 ? "Delete successful." : "Delete failed.");
         }
     }
