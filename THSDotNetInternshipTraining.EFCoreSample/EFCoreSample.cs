@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using THSDotNetTraining.EFCoreSample.DataAccess;
+using THSDotNetTraining.EFCoreSample.Database.AppDbContextModels;
 
 namespace THSDotNetTraining.EFCoreSample.ConsoleApp
 {
@@ -9,6 +9,7 @@ namespace THSDotNetTraining.EFCoreSample.ConsoleApp
     {
         public void Read()
         {
+
             using var context = new AppDbContext();
 
             var students = context.TblStudents.Where(x => x.DeleteFlag == false).ToList();

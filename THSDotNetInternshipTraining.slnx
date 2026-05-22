@@ -1,5 +1,9 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="README.md" />
+  </Folder>
   <Project Path="THSDotNetInternshipTraining.AdoDotNetSample/THSDotNetInternshipTraining.AdoDotNetSample.csproj" />
   <Project Path="THSDotNetInternshipTraining.DapperSample/THSDotNetInternshipTraining.DapperSample.csproj" />
   <Project Path="THSDotNetInternshipTraining.EFCoreSample/THSDotNetInternshipTraining.EFCoreSample.csproj" />
+  <Project Path="THSDotNetTraining.EFCoreSample.Database/THSDotNetTraining.EFCoreSample.Database.csproj" Id="4606f6cf-66e2-47b8-bb1c-eda3267659b8" />
 </Solution>

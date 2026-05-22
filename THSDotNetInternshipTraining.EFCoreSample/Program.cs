@@ -1,5 +1,5 @@
 ﻿using System;
-using THSDotNetTraining.EFCoreSample.DataAccess;
+using THSDotNetTraining.EFCoreSample.Database.AppDbContextModels;
 
 namespace THSDotNetTraining.EFCoreSample.ConsoleApp
 {

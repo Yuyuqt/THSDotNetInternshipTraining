@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace THSDotNetTraining.EFCoreSample.DataAccess;
+namespace THSDotNetTraining.EFCoreSample.Database.AppDbContextModels;
 
 public partial class TblStudent
 {
