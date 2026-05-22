@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using Microsoft.Data.SqlClient;
-using Dapper; // <-- Don't forget this!
+using Dapper; 
 using THSDotNetTraining.DapperSample;
 
 namespace THSDotNetTraining.DapperSample.ConsoleApp
@@ -18,6 +18,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
             TrustServerCertificate = true
         };
 
+        // Read
         public void Read()
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
@@ -37,7 +38,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                   ,[ModifiedBy]
                               FROM [dbo].[Tbl_Student] WHERE [DeleteFlag] = 0";
 
-            // Dapper automatically opens the connection and maps rows to <Student> objects!
+            
             IEnumerable<Student> students = connection.Query<Student>(query);
 
             foreach (var item in students)
@@ -47,6 +48,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
             }
         }
 
+        // Edit
         public Student? Edit(int id)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
@@ -66,7 +68,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                   ,[ModifiedBy] 
                              FROM [dbo].[Tbl_Student] WHERE [StudentId] = @StudentId AND [DeleteFlag] = 0";
 
-            // QueryFirstOrDefault handles matching parameters and returns null if not found
+            
             var student = connection.QueryFirstOrDefault<Student>(query, new { StudentId = id });
 
             if (student == null)
@@ -77,6 +79,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
             return student;
         }
 
+        //Create
         public void Create(Student student)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
@@ -85,7 +88,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                                     ([StudentNo], [StudentName], [FatherName], [DateOfBirth], [Gender], [Address], [MobileNo], [DeleteFlag], [CreatedDateTime], [CreatedBy])
                              VALUES (@StudentNo, @StudentName, @FatherName, @DateOfBirth, @Gender, @Address, @MobileNo, 0, @CreatedDateTime, @CreatedBy)";
 
-            // Set up audit fields dynamically before sending to Dapper
+            
             var parameters = new
             {
                 student.StudentNo,
@@ -99,11 +102,12 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
                 CreatedBy = "admin"
             };
 
-            // connection.Execute returns the number of affected rows
+            
             int result = connection.Execute(query, parameters);
             Console.WriteLine(result > 0 ? "Create successful." : "Create failed.");
         }
 
+        //Update
         public void Update(Student student)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
@@ -138,6 +142,7 @@ namespace THSDotNetTraining.DapperSample.ConsoleApp
             Console.WriteLine(result > 0 ? "Update successful." : "Update failed.");
         }
 
+        //Delete
         public void Delete(int id)
         {
             using SqlConnection connection = new SqlConnection(builder.ConnectionString);
