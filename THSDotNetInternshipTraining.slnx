@@ -5,5 +5,6 @@
   <Project Path="THSDotNetInternshipTraining.AdoDotNetSample/THSDotNetInternshipTraining.AdoDotNetSample.csproj" />
   <Project Path="THSDotNetInternshipTraining.DapperSample/THSDotNetInternshipTraining.DapperSample.csproj" />
   <Project Path="THSDotNetInternshipTraining.EFCoreSample/THSDotNetInternshipTraining.EFCoreSample.csproj" />
+  <Project Path="THSDotNetInternshipTraining.WebApi/THSDotNetInternshipTraining.WebApi.csproj" Id="30c17fd6-21d0-4e3a-97ec-6bd0f0fb4707" />
   <Project Path="THSDotNetTraining.EFCoreSample.Database/THSDotNetTraining.EFCoreSample.Database.csproj" Id="4606f6cf-66e2-47b8-bb1c-eda3267659b8" />
 </Solution>

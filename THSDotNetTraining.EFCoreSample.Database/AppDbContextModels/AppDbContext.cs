@@ -15,14 +15,29 @@ public partial class AppDbContext : DbContext
     {
     }
 
+    public virtual DbSet<Blog> Blogs { get; set; }
+
     public virtual DbSet<TblStudent> TblStudents { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=.;Database=Practice;User Id=sa;Password=sasa@123;TrustServerCertificate=True;");
+        => optionsBuilder.UseSqlServer("Server=.;Database=Practice;User ID=sa;Password=sasa@123;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Blog>(entity =>
+        {
+            entity.HasKey(e => e.BlogId).HasName("PK__Blogs__54379E303D7DC962");
+
+            entity.Property(e => e.BlogAuthor)
+                .HasMaxLength(100)
+                .IsUnicode(false);
+            entity.Property(e => e.BlogContent).HasColumnType("text");
+            entity.Property(e => e.BlogTitle)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+        });
+
         modelBuilder.Entity<TblStudent>(entity =>
         {
             entity.HasKey(e => e.StudentId);
